@@ -22,9 +22,9 @@ Install the mcp-google-workspace MCP server for me by following these steps exac
 
 1. Check that Node.js 18+ is installed (`node --version`). If not, tell me to install it and stop.
 
-2. Ask me for the path to my Google Service Account JSON file. Default suggestion: `~/.config/gcp/sa.json`. Wait for my answer before proceeding.
+2. Ask me for the path to my Google Service Account JSON file. Default suggestion: `~/.config/gcp/sa.json`. Wait for my answer before proceeding. If the file does not exist at the path I gave, list the contents of that directory and ask me to confirm the correct filename before continuing.
 
-3. Verify the file exists at the path I provided. Read it and confirm it contains `"type": "service_account"` and print the `client_email` value — this is the address you'll use to share your Google files with the service account.
+3. Verify the file exists at the path I provided. Read it and confirm it contains `"type": "service_account"`, then print ONLY the `client_email` value — do not print the full file contents or the private key. This email is the address you'll use to share your Google files with the service account.
 
 4. Check if `~/.mcp.json` exists.
    - If it does NOT exist: create it with this content (replace SA_PATH with my actual path):
