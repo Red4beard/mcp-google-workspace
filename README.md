@@ -85,14 +85,14 @@ Create or edit `~/.mcp.json`:
       "command": "npx",
       "args": ["-y", "github:Red4beard/mcp-google-workspace"],
       "env": {
-        "GOOGLE_APPLICATION_CREDENTIALS": "/Users/YOUR_NAME/.config/gcp/sa.json"
+        "GOOGLE_APPLICATION_CREDENTIALS": "/path/to/your/sa.json"
       }
     }
   }
 }
 ```
 
-Replace the path with the actual location of your SA JSON file.
+Replace `/path/to/your/sa.json` with the actual absolute path to your SA JSON file.
 
 ### 3. Restart VSCode completely
 
@@ -112,6 +112,7 @@ The Service Account is like a separate Google user. It can only access files exp
 ### 5. Verify
 
 Run in terminal:
+
 ```bash
 claude mcp list
 ```
