@@ -10,7 +10,7 @@ import { docsTools } from "./tools/docs.js";
 export * from "./handlers/sheets.js";
 export * from "./handlers/drive.js";
 export * from "./handlers/docs.js";
-import { handleSheetsList, handleSheetsGet, handleSheetsUpdate, handleSheetsCreate, handleSheetsListSheets, handleSheetsAppend, handleSheetsClear, handleSheetsAddSheet, handleSheetsDeleteSheet, handleSheetsCopyTo, handleSheetsBatchUpdate, } from "./handlers/sheets.js";
+import { handleSheetsList, handleSheetsGet, handleSheetsUpdate, handleSheetsCreate, handleSheetsListSheets, handleSheetsAppend, handleSheetsClear, handleSheetsAddSheet, handleSheetsDeleteSheet, handleSheetsCopyTo, handleSheetsBatchUpdate, handleSheetsFormatCells, } from "./handlers/sheets.js";
 import { handleDriveList, handleDriveSearch, handleDriveGet, handleDriveDownload, handleDriveCreateFolder, handleDriveUpload, handleDriveMove, handleDriveRename, handleDriveDelete, handleDriveShare, handleDriveCopy, } from "./handlers/drive.js";
 import { handleDocsGet, handleDocsCreate, handleDocsAppend, handleDocsUpdate, handleDocsGetRaw, handleDocsInsertTable, handleDocsExport, } from "./handlers/docs.js";
 const server = new Server({ name: "mcp-google-workspace", version: "1.0.0" }, { capabilities: { tools: {} } });
@@ -34,6 +34,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             case "sheets_delete_sheet": return ok(await handleSheetsDeleteSheet(sheetsClient, a));
             case "sheets_copy_to": return ok(await handleSheetsCopyTo(sheetsClient, a));
             case "sheets_batch_update": return ok(await handleSheetsBatchUpdate(sheetsClient, a));
+            case "sheets_format_cells": return ok(await handleSheetsFormatCells(sheetsClient, a));
             // Drive
             case "drive_list": return ok(await handleDriveList(driveClient, a));
             case "drive_search": return ok(await handleDriveSearch(driveClient, a));

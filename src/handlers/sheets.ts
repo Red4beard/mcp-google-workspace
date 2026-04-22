@@ -126,6 +126,82 @@ export async function handleSheetsCopyTo(
   return `Copied to sheet "${res.data.title}" (sheetId: ${res.data.sheetId}) in ${params.destinationSpreadsheetId}.`;
 }
 
+function hexToRgb(hex: string): { red: number; green: number; blue: number } {
+  const clean = hex.replace(/^#/, "");
+  const num = parseInt(clean.length === 3
+    ? clean.split("").map((c) => c + c).join("")
+    : clean, 16);
+  return {
+    red: ((num >> 16) & 255) / 255,
+    green: ((num >> 8) & 255) / 255,
+    blue: (num & 255) / 255,
+  };
+}
+
+function parseA1Range(range: string): { startRowIndex: number; endRowIndex: number; startColumnIndex: number; endColumnIndex: number } {
+  const colLetters = (s: string) => {
+    let n = 0;
+    for (const c of s.toUpperCase()) n = n * 26 + (c.charCodeAt(0) - 64);
+    return n - 1;
+  };
+  const m = range.match(/^([A-Za-z]+)(\d+)(?::([A-Za-z]+)(\d+))?$/);
+  if (!m) throw new Error(`Invalid A1 range: ${range}`);
+  const startCol = colLetters(m[1]);
+  const startRow = parseInt(m[2]) - 1;
+  const endCol = m[3] ? colLetters(m[3]) + 1 : startCol + 1;
+  const endRow = m[4] ? parseInt(m[4]) : startRow + 1;
+  return { startRowIndex: startRow, endRowIndex: endRow, startColumnIndex: startCol, endColumnIndex: endCol };
+}
+
+export async function handleSheetsFormatCells(
+  sheets: sheets_v4.Sheets,
+  params: {
+    spreadsheetId: string;
+    sheetId: number;
+    range: string;
+    backgroundColor?: string;
+    textColor?: string;
+    bold?: boolean;
+    fontSize?: number;
+  }
+): Promise<string> {
+  const gridRange = { sheetId: params.sheetId, ...parseA1Range(params.range) };
+  const format: Record<string, unknown> = {};
+  const fields: string[] = [];
+
+  if (params.backgroundColor) {
+    format.backgroundColor = hexToRgb(params.backgroundColor);
+    fields.push("userEnteredFormat.backgroundColor");
+  }
+  if (params.textColor) {
+    format.textFormat = { ...(format.textFormat as object ?? {}), foregroundColor: hexToRgb(params.textColor) };
+    fields.push("userEnteredFormat.textFormat.foregroundColor");
+  }
+  if (params.bold !== undefined) {
+    format.textFormat = { ...(format.textFormat as object ?? {}), bold: params.bold };
+    fields.push("userEnteredFormat.textFormat.bold");
+  }
+  if (params.fontSize !== undefined) {
+    format.textFormat = { ...(format.textFormat as object ?? {}), fontSize: params.fontSize };
+    fields.push("userEnteredFormat.textFormat.fontSize");
+  }
+  if (fields.length === 0) return "No formatting options provided.";
+
+  await sheets.spreadsheets.batchUpdate({
+    spreadsheetId: params.spreadsheetId,
+    requestBody: {
+      requests: [{
+        repeatCell: {
+          range: gridRange,
+          cell: { userEnteredFormat: format },
+          fields: fields.join(","),
+        },
+      }],
+    },
+  });
+  return `Formatted range ${params.range} on sheet ${params.sheetId}.`;
+}
+
 export async function handleSheetsBatchUpdate(
   sheets: sheets_v4.Sheets,
   params: {

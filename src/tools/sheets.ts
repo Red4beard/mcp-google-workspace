@@ -141,4 +141,21 @@ export const sheetsTools = [
       required: ["spreadsheetId", "updates"],
     },
   },
+  {
+    name: "sheets_format_cells",
+    description: "Format cells in a spreadsheet: background color, text color, bold, font size. Use sheetId (numeric) from sheets_list_sheets.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        spreadsheetId: { type: "string" },
+        sheetId: { type: "number", description: "Numeric sheet tab ID (from sheets_list_sheets)" },
+        range: { type: "string", description: "A1 notation range, e.g. B2 or A1:C3" },
+        backgroundColor: { type: "string", description: "Hex color, e.g. #FF0000 for red (optional)" },
+        textColor: { type: "string", description: "Hex color for text, e.g. #FFFFFF (optional)" },
+        bold: { type: "boolean", description: "Set text bold (optional)" },
+        fontSize: { type: "number", description: "Font size in points (optional)" },
+      },
+      required: ["spreadsheetId", "sheetId", "range"],
+    },
+  },
 ] as const;

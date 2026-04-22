@@ -21,6 +21,7 @@ import {
   handleSheetsList, handleSheetsGet, handleSheetsUpdate, handleSheetsCreate,
   handleSheetsListSheets, handleSheetsAppend, handleSheetsClear,
   handleSheetsAddSheet, handleSheetsDeleteSheet, handleSheetsCopyTo, handleSheetsBatchUpdate,
+  handleSheetsFormatCells,
 } from "./handlers/sheets.js";
 import {
   handleDriveList, handleDriveSearch, handleDriveGet, handleDriveDownload,
@@ -58,6 +59,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       case "sheets_delete_sheet": return ok(await handleSheetsDeleteSheet(sheetsClient, a as any));
       case "sheets_copy_to":      return ok(await handleSheetsCopyTo(sheetsClient, a as any));
       case "sheets_batch_update": return ok(await handleSheetsBatchUpdate(sheetsClient, a as any));
+      case "sheets_format_cells": return ok(await handleSheetsFormatCells(sheetsClient, a as any));
       // Drive
       case "drive_list":          return ok(await handleDriveList(driveClient, a as any));
       case "drive_search":        return ok(await handleDriveSearch(driveClient, a as any));
