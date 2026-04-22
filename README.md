@@ -13,6 +13,10 @@ MCP server for Google Workspace — gives Claude Code direct access to **Google 
 
 Copy this prompt and paste it into **Claude Code**. It will do everything automatically:
 
+> **Note:** This prompt runs entirely on your local machine.
+> The SA JSON key is never transmitted — only its `client_email`
+> (a non-secret public identifier) is printed so you know which address to use when sharing files in Google Drive.
+
 ````text
 Install the mcp-google-workspace MCP server for me by following these steps exactly:
 
@@ -20,7 +24,7 @@ Install the mcp-google-workspace MCP server for me by following these steps exac
 
 2. Ask me for the path to my Google Service Account JSON file. Default suggestion: `~/.config/gcp/sa.json`. Wait for my answer before proceeding.
 
-3. Verify the file exists at the path I provided. Read it and confirm it contains `"type": "service_account"` and print the `client_email` value so I know which email to share files with.
+3. Verify the file exists at the path I provided. Read it and confirm it contains `"type": "service_account"` and print the `client_email` value — this is the address you'll use to share your Google files with the service account.
 
 4. Check if `~/.mcp.json` exists.
    - If it does NOT exist: create it with this content (replace SA_PATH with my actual path):
@@ -46,7 +50,7 @@ Install the mcp-google-workspace MCP server for me by following these steps exac
    Confirm it returns a valid JSON response with `"name":"mcp-google-workspace"`.
 
 6. Tell me:
-   - The `client_email` from the SA JSON (I need to share files with this address)
+   - The `client_email` from the SA JSON — you'll need this email to share your Drive files with the service account (Step 4 in Manual Setup)
    - That I must fully restart VSCode (Cmd+Q, not just Reload Window) for the MCP server to load
    - How to verify: after restart, ask Claude "List my accessible Google Sheets"
 ````
